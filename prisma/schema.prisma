@@ -18,6 +18,7 @@ model Tweet {
 
     user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     likes Like[]
+    @@unique([createdAt , id])
 }
 
 model Like {
