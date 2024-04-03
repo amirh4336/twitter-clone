@@ -1,10 +1,5 @@
 import type { Metadata, NextPage } from "next";
-import Link from "next/link";
-import { VscArrowLeft } from "react-icons/vsc";
-import FollowButton from "~/app/_components/FollowButton";
-import IconHoverEffect from "~/app/_components/iconHoverEffect";
-import ProfileImage from "~/app/_components/profileImage";
-import TweetsWrapper from "~/app/_components/tweetsWrapper";
+import Profile from "~/app/_components/profile";
 
 import { api } from "~/trpc/server";
 
@@ -26,49 +21,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const Page: NextPage<Props> = async ({ params }) => {
-  const profile = await api.profile.getById({
-    id: params.id,
-  });
-
-  if (profile == null ?? profile?.name == null)
-    return <p>Opss we have a problem</p>;
-
-
+const Page: NextPage<Props> = ({ params }) => {
   return (
     <>
-      <header className="sticky top-0 z-10 flex items-center border-b bg-white p-2 px-4">
-        <Link href=".." className="mr-2">
-          <IconHoverEffect>
-            <VscArrowLeft className="h-6 w-6" />
-          </IconHoverEffect>
-        </Link>
-        <ProfileImage src={profile.image} className="flex-shrink-0" />
-        <div className="ml-2 flex-grow">
-          <h1 className="text-lg font-bold">{profile.name}</h1>
-          <div className="text-gray-500">
-            {profile.tweetsCount}{" "}
-            {getPlural(profile.tweetsCount, "Tweet", "Tweets")} -{" "}
-            {profile.followersCount}{" "}
-            {getPlural(profile.followersCount, "Follower", "Followers")} -{" "}
-            {profile.followsCount} Following
-          </div>
-        </div>
-        <FollowButton
-          isFollowing={profile.isFollowing}
-          userId={params.id}
-        />
-      </header>
-      <TweetsWrapper id={params.id} />
+      <Profile params={params} />
     </>
   );
-};
-
-const pluralRules = new Intl.PluralRules();
-const getPlural = (number: number, singular: string, plural: string) => {
-  return pluralRules.select(parseInt(number.toString())) === "one"
-    ? singular
-    : plural;
 };
 
 export default Page;
