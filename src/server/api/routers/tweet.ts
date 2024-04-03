@@ -11,7 +11,7 @@ export const tweetRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().optional(),
-        cursor: z.object({ id: z.string(), createdAt: z.string()}).optional() ,
+        cursor: z.object({ id: z.string(), createdAt: z.string() }).optional(),
       }),
     )
     .query(async ({ input: { limit = 10, cursor }, ctx }) => {
@@ -53,7 +53,7 @@ export const tweetRouter = createTRPCRouter({
           createdAt: tweet.createdAt.toISOString(),
           likeCount: tweet._count.likes,
           user: tweet.user,
-          likedByMe: tweet.likes?.length > 0
+          likedByMe: tweet.likes?.length > 0,
         })),
         nextCursor,
       };
@@ -70,5 +70,22 @@ export const tweetRouter = createTRPCRouter({
         data: { content, userId: ctx.session.user.id },
       });
       return tweet;
+    }),
+
+  toggleLike: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input: { id }, ctx }) => {
+      const data = { tweetId: id, userId: ctx.session.user.id };
+      const existingLike = await ctx.db.like.findUnique({
+        where: { userId_tweetId: data },
+      });
+
+      if (existingLike == null) {
+        await ctx.db.like.create({ data });
+        return { addedLike: true };
+      } else {
+        await ctx.db.like.delete({ where: { userId_tweetId: data } });
+        return { addedLike: false };
+      }
     }),
 });
