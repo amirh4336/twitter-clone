@@ -11,7 +11,7 @@ export const tweetRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().optional(),
-        cursor: z.object({ id: z.string(), createdAt: z.string().optional() }),
+        cursor: z.object({ id: z.string(), createdAt: z.string()}).optional() ,
       }),
     )
     .query(async ({ input: { limit = 10, cursor }, ctx }) => {

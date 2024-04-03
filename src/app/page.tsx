@@ -1,6 +1,5 @@
-import InfiniteTweetList from "./_components/infiniteTweetList";
 import NewTweetForm from "./_components/newTweetForm";
-
+import RecentTweets from "./_components/recentTweets";
 
 export default async function Home() {
   return (
@@ -12,10 +11,4 @@ export default async function Home() {
       <RecentTweets />
     </>
   );
-}
-
-const RecentTweets = () => {
-  const tweets = []
-
-  return <InfiniteTweetList tweets={tweets}  />
 }
