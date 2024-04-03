@@ -8,7 +8,7 @@ type IconHoverEffectProps = {
 const IconHoverEffect = ({ children, red = false }: IconHoverEffectProps) => {
   const colorClasses = red
     ? "outline-red-400 hover:bg-red-200 group-hover-bg-red-200 group-focus-visible:bg-red-200 focus-visible:bg-red-200"
-    : "outline-grey-400 hover:bg-grey-200 group-hover-bg-grey-200 group-focus-visible:bg-grey-200 focus-visible:bg-grey-200";
+    : "outline-gray-400 hover:bg-gray-200 group-hover-bg-gray-200 group-focus-visible:bg-gray-200 focus-visible:bg-gray-200";
 
   return (
     <div
