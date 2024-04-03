@@ -1,12 +1,10 @@
 import type { Metadata, NextPage } from "next";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { VscArrowLeft } from "react-icons/vsc";
-import Button from "~/app/_components/button";
+import FollowButton from "~/app/_components/FollowButton";
 import IconHoverEffect from "~/app/_components/iconHoverEffect";
 import ProfileImage from "~/app/_components/profileImage";
 import TweetsWrapper from "~/app/_components/tweetsWrapper";
-import { getServerAuthSession } from "~/server/auth";
 
 import { api } from "~/trpc/server";
 
@@ -36,6 +34,7 @@ const Page: NextPage<Props> = async ({ params }) => {
   if (profile == null ?? profile?.name == null)
     return <p>Opss we have a problem</p>;
 
+
   return (
     <>
       <header className="sticky top-0 z-10 flex items-center border-b bg-white p-2 px-4">
@@ -58,33 +57,10 @@ const Page: NextPage<Props> = async ({ params }) => {
         <FollowButton
           isFollowing={profile.isFollowing}
           userId={params.id}
-          onClick={() => null}
         />
       </header>
       <TweetsWrapper id={params.id} />
     </>
-  );
-};
-
-const FollowButton = async ({
-  userId,
-  isFollowing,
-  onClick,
-}: {
-  userId: string;
-  isFollowing: boolean;
-  onClick: () => void;
-}) => {
-  const session = await getServerAuthSession();
-
-  if (session?.user == null || session.user.id === userId) {
-    return null;
-  }
-
-  return (
-    <Button onClick={onClick} small gray={isFollowing}>
-      {isFollowing ? "Unfollow" : "Follow"}
-    </Button>
   );
 };
 
