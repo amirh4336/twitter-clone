@@ -71,7 +71,7 @@ function TweetCard({
   likeCount,
   likedByMe,
 }: Tweet) {
-  const trpcUtils = api.useContext();
+  const trpcUtils = api.useUtils();
   const toggleLike = api.tweet.toggleLike.useMutation({
     onSuccess: ({ addedLike }) => {
       const updateData: Parameters<

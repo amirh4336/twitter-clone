@@ -20,7 +20,7 @@ const NewTweetForm = () => {
     textAreaRef.current = textArea;
   }, []);
 
-  const trpcUtils = api.useContext();
+  const trpcUtils = api.useUtils();
 
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
@@ -32,7 +32,6 @@ const NewTweetForm = () => {
 
       if (session.status !== "authenticated") return;
 
-      // @ts-expect-error don't set the params 
       const updateNewTweet: Parameters<
         typeof trpcUtils.tweet.infiniteFeed.setInfiniteData
       >[1] = (oldData) => {
@@ -46,8 +45,8 @@ const NewTweetForm = () => {
           createdAt: new Date().toISOString(),
           user: {
             id: session.data.user.id,
-            name: session.data.user.name,
-            image: session.data.user.image,
+            name: session.data.user.name ?? null,
+            image: session.data.user.image ?? null,
           },
         };
 
