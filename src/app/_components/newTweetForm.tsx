@@ -20,14 +20,50 @@ const NewTweetForm = () => {
     textAreaRef.current = textArea;
   }, []);
 
+  const trpcUtils = api.useContext();
+
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
   }, [inputValue]);
 
   const createTweet = api.tweet.create.useMutation({
     onSuccess: (newTweet) => {
-      console.log(newTweet);
-      setInputValue("")
+      setInputValue("");
+
+      if (session.status !== "authenticated") return;
+
+      // @ts-expect-error don't set the params 
+      const updateNewTweet: Parameters<
+        typeof trpcUtils.tweet.infiniteFeed.setInfiniteData
+      >[1] = (oldData) => {
+        if (oldData == null) return;
+        if (oldData.pages[0] == null) return;
+
+        const newCacheTweed = {
+          ...newTweet,
+          likeCount: 0,
+          likedByMe: false,
+          createdAt: new Date().toISOString(),
+          user: {
+            id: session.data.user.id,
+            name: session.data.user.name,
+            image: session.data.user.image,
+          },
+        };
+
+        return {
+          ...oldData,
+          pages: [
+            {
+              ...oldData.pages[0],
+              tweets: [newCacheTweed, ...oldData.pages[0].tweets],
+            },
+            ...oldData.pages.slice(1),
+          ],
+        };
+      };
+
+      trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateNewTweet);
     },
   });
 
